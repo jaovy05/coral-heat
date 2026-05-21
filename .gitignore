@@ -1,6 +1,11 @@
+# coisas do python
 __pycache__/
 __init__.py
-*.txt
 
+# lixo que criei na resenha
+*.txt
+!requirements.txt
+
+#data
 data/*
 !data/regiao.parquet
