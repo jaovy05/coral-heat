@@ -6,5 +6,5 @@ class db:
     def obter_conexao(write: bool = False) -> duckdb.DuckDBPyConnection:
         db_path = getattr(settings, "DUCKDB_PATH", "data/data.db")
         con = duckdb.connect(db_path, read_only=not write)
-        con.execute("LOAD spatial;")  # INSTALL só precisa rodar uma vez
+        con.execute("INSTALL spatial;LOAD spatial;")  # INSTALL só precisa rodar uma vez
         return con

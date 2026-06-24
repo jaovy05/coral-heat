@@ -1,7 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head><title>Lista de Usuários</title></head>
 <body>
+    {% include 'partials/header.html' %}
     <h1>Usuários</h1>
     <a href="{% url 'user-create' %}">Novo Usuário</a>
     <ul>

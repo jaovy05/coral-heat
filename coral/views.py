@@ -230,3 +230,9 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+def sobre(request):
+    """Página estática 'Sobre' com fatos críticos e lista de ONGs.
+    Template: coral/templates/sobre.html
+    """
+    return render(request, 'sobre.html')

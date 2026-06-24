@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sobre — Monitoramento Marinho</title>
+  <link rel="stylesheet" href="{% static 'coral/css/sobre.css' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <main class="sobre-page">
+    <section class="hero">
+      <div class="container hero-inner">
+        <h1>Fatos Críticos</h1>
+        <p class="lead">Compreenda a urgência da conservação dos recifes de coral através de dados concretos</p>
+      </div>
+    </section>
+
+    <section class="fatos container">
+      <div class="grid facts-grid">
+        <div class="fact-card blue">
+          <div class="fact-value">25%</div>
+          <div class="fact-title">Biodiversidade Marinha</div>
+          <div class="fact-desc">Os recifes de coral abrigam 25% de toda a vida marinha, apesar de cobrirem menos de 1% do oceano.</div>
+        </div>
+
+        <div class="fact-card orange">
+          <div class="fact-value">70%</div>
+          <div class="fact-title">Risco de Extinção</div>
+          <div class="fact-desc">70% dos corais do mundo estão ameaçados de extinção devido ao aquecimento global e poluição.</div>
+        </div>
+
+        <div class="fact-card yellow">
+          <div class="fact-value">+2°C</div>
+          <div class="fact-title">Branqueamento</div>
+          <div class="fact-desc">Um aumento de apenas 1–2°C na temperatura da água pode causar branqueamento em massa dos corais.</div>
+        </div>
+
+        <div class="fact-card pink">
+          <div class="fact-value">200M</div>
+          <div class="fact-title">Proteção Costeira</div>
+          <div class="fact-desc">Recifes de coral protegem 200 milhões de pessoas de ondas e tempestades costeiras.</div>
+        </div>
+
+        <div class="fact-card green">
+          <div class="fact-value">$375B</div>
+          <div class="fact-title">Impacto Econômico</div>
+          <div class="fact-desc">Recifes geram US$ 375 bilhões anuais em turismo, pesca e proteção costeira.</div>
+        </div>
+
+        <div class="fact-card violet">
+          <div class="fact-value">500M+</div>
+          <div class="fact-title">Subsistência</div>
+          <div class="fact-desc">Mais de 500 milhões de pessoas dependem dos recifes de coral para alimentação e renda.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ongs container">
+      <h2>ONGs em Ação</h2>
+      <p class="lead">Organizações dedicadas à preservação e restauração dos recifes de coral ao redor do mundo</p>
+
+      <div class="grid org-grid">
+        <article class="org-card">
+          <div class="org-media" style="background-image: url({% static 'coral/img/org1.jpg' %});"></div>
+          <div class="org-body">
+            <h3>Coral Restoration Foundation</h3>
+            <p>Restaura recifes de coral através de viveiros submarinos e transplante de corais.</p>
+            <a class="org-link" href="#" target="_blank" rel="noopener">Visitar</a>
+          </div>
+        </article>
+
+        <article class="org-card">
+          <div class="org-media" style="background-image: url({% static 'coral/img/org2.jpg' %});"></div>
+          <div class="org-body">
+            <h3>The Ocean Agency</h3>
+            <p>Documenta e conscientiza sobre o branqueamento de corais através de tecnologia.</p>
+            <a class="org-link" href="#" target="_blank" rel="noopener">Visitar</a>
+          </div>
+        </article>
+
+        <article class="org-card">
+          <div class="org-media" style="background-image: url({% static 'coral/img/org3.jpg' %});"></div>
+          <div class="org-body">
+            <h3>Reef Check Foundation</h3>
+            <p>Programa global de monitoramento de recifes com voluntários treinados.</p>
+            <a class="org-link" href="#" target="_blank" rel="noopener">Visitar</a>
+          </div>
+        </article>
+
+        <article class="org-card">
+          <div class="org-media" style="background-image: url({% static 'coral/img/org4.jpg' %});"></div>
+          <div class="org-body">
+            <h3>50 Reefs Initiative</h3>
+            <p>Identifica e protege recifes com maior chance de sobreviver ao aquecimento global.</p>
+            <a class="org-link" href="#" target="_blank" rel="noopener">Visitar</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><p>Monitoramento Marinho · 2026</p></div>
+  </footer>
+</body>
+</html>

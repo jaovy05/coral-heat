@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'coral_heart.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'core_application',
-        'USER': 'auth_user',
-        'PASSWORD': 'auth_secure_password',
+        'NAME': 'coral_db',
+        'USER': 'coral',
+        'PASSWORD': 'coral123',
         'HOST': 'localhost',
         'PORT': '5432',
     }

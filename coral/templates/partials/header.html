@@ -1,0 +1,32 @@
+{% load static %}
+<header class="site-header">
+  <link rel="stylesheet" href="{% static 'coral/css/header.css' %}">
+
+  <div class="container">
+    <div class="brand">
+      <a href="{% url 'sobre' %}" aria-label="Início">
+        <!-- small wave/logo -->
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2"/></svg>
+        CoralWatch
+      </a>
+    </div>
+
+    <nav class="nav">
+      <a href="{% url 'sobre' %}">Início</a>
+      <a href="{% url 'index' %}" class="btn-mapa">Mapa Global</a>
+      <a href="#">Contato</a>
+    </nav>
+
+    <div class="actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'user-update' %}" title="Gerenciar Usuário">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+      {% else %}
+        <a href="{% url 'login' %}" title="Entrar">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</header>
