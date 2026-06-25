@@ -500,6 +500,7 @@ function abrirModalMediaMes(regiao) {
             }
         })
         .catch(() => {
+            console.error('Erro ao carregar dados mensais:', err);
             subtitle.textContent = 'Não foi possível carregar os dados do mês.';
             body.innerHTML = '<div class="modal-loading modal-loading--error">Erro ao carregar dados mensais.</div>';
         });
