@@ -1,3 +1,12 @@
+const METRICAS_INFO = {
+    temperatura: "A temperatura elevada causa o branqueamento dos corais, expulsando as algas simbiontes que fornecem energia e cor.",
+    salinidade: "Mudanças bruscas na salinidade afetam a regulação osmótica dos pólipos, podendo levar à morte do coral.",
+    corrente_zonal: "Correntes zonais transportam nutrientes e larvas. Alterações afetam a dispersão e a alimentação.",
+    corrente_meridional: "Essenciais para a troca de calor e nutrientes. Impactam a temperatura local e a clareza da água.",
+    oxigenio: "Essencial para a respiração dos organismos. Níveis baixos (hipóxia) podem causar estresse severo na comunidade.",
+    plancton: "Base da cadeia alimentar. Níveis adequados garantem a nutrição, níveis excessivos podem causar eutrofização."
+};
+
 const METRICAS_DETALHE = [
     {
         key: 'temperatura',
@@ -345,15 +354,23 @@ function renderMetricCards(series, selectedMetric) {
     const latest = series[series.length - 1] || {};
 
     return METRICAS_DETALHE.map((metric) => `
-        <button
-            type="button"
+        <div
+            role="button"
+            tabindex="0"
             class="modal-metric-card ${metric.key === selectedMetric ? 'is-active' : ''}"
             data-metric="${metric.key}"
         >
-            <button type="button" class="modal-metric-info-btn" onclick="togglePopover(event, '${metric.key}')">
+            <button
+                type="button"
+                id="metric-info-${metric.key}"
+                class="modal-metric-info-btn"
+                popovertarget="popover-${metric.key}"
+                popovertargetaction="toggle"
+                aria-label="Informações sobre ${escapeHtml(metric.label)}"
+            >
                 <i data-lucide="help-circle" style="width: 16px; height: 16px;"></i>
             </button>
-            <div id="popover-${metric.key}" class="modal-popover">
+            <div id="popover-${metric.key}" popover="auto" class="modal-popover" anchor="metric-info-${metric.key}">
                 ${METRICAS_INFO[metric.key] || 'Informação não disponível.'}
             </div>
             <span class="modal-metric-card__icon">
@@ -364,20 +381,8 @@ function renderMetricCards(series, selectedMetric) {
                 ${formatMetric(latest[metric.field], metric.digits)} <span>${metric.unit}</span>
             </strong>
             <span class="modal-metric-card__note">Clique para trocar o gráfico</span>
-        </button>
+        </div>
     `).join('');
-}
-
-function togglePopover(event, key) {
-    event.stopPropagation();
-    const popover = document.getElementById(`popover-${key}`);
-    const allPopovers = document.querySelectorAll('.modal-popover');
-    
-    allPopovers.forEach(p => {
-        if(p !== popover) p.style.display = 'none';
-    });
-    
-    popover.style.display = popover.style.display === 'block' ? 'none' : 'block';
 }
 
 function mountMetricSwitcher(modalState) {
@@ -386,16 +391,45 @@ function mountMetricSwitcher(modalState) {
         return;
     }
 
+    root.querySelectorAll('.modal-popover[popover]').forEach((popover) => {
+        popover.addEventListener('toggle', (event) => {
+            if (event.newState !== 'open') {
+                return;
+            }
+            root.querySelectorAll('.modal-popover[popover]').forEach((other) => {
+                if (other !== popover && other.matches(':popover-open')) {
+                    other.hidePopover();
+                }
+            });
+        });
+    });
+
+    root.querySelectorAll('.modal-metric-info-btn').forEach((btn) => {
+        btn.addEventListener('click', (event) => event.stopPropagation());
+    });
+
     const cards = root.querySelectorAll('.modal-metric-card');
     cards.forEach((card) => {
-        card.addEventListener('click', () => {
+        const activate = () => {
             const metricKey = card.dataset.metric;
             if (!metricKey || metricKey === modalState.selectedMetric) {
                 return;
             }
-
             modalState.selectedMetric = metricKey;
             atualizarGraficoModal(modalState);
+        };
+
+        card.addEventListener('click', (event) => {
+            if (event.target.closest('.modal-metric-info-btn')) {
+                return;
+            }
+            activate();
+        });
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                activate();
+            }
         });
     });
 }
@@ -499,7 +533,7 @@ function abrirModalMediaMes(regiao) {
                 lucide.createIcons();
             }
         })
-        .catch(() => {
+        .catch((err) => {
             console.error('Erro ao carregar dados mensais:', err);
             subtitle.textContent = 'Não foi possível carregar os dados do mês.';
             body.innerHTML = '<div class="modal-loading modal-loading--error">Erro ao carregar dados mensais.</div>';

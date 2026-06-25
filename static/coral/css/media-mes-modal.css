@@ -2,9 +2,11 @@
     position: fixed;
     inset: 0;
     display: none;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
+    padding-top: calc(var(--header-height, 64px) + 24px);
+    overflow-y: auto;
     background: rgba(6, 22, 34, 0.62);
     backdrop-filter: blur(14px);
     z-index: 3000;
@@ -16,7 +18,7 @@
 
 .reef-modal__dialog {
     width: min(1100px, 100%);
-    max-height: min(88vh, 980px);
+    max-height: calc(100vh - var(--header-height, 64px) - 44px);
     overflow: auto;
     background: linear-gradient(180deg, #123d61 0%, #16486d 45%, #1a4d76 100%);
     border: 1px solid rgba(142, 212, 236, 0.18);
@@ -196,6 +198,8 @@
 }
 
 .modal-metric-card {
+    width: 100%;
+    min-width: 0;
     border: 1px solid rgba(76, 215, 255, 0.12);
     border-radius: 18px;
     padding: 10px 8px;
@@ -228,9 +232,11 @@
 }
 
 .modal-popover {
-    position: absolute;
-    top: 100%;
-    right: 0;
+    position: fixed;
+    margin: 0;
+    top: anchor(bottom);
+    left: anchor(left);
+    translate: 0 8px;
     width: 220px;
     background: rgba(6, 27, 45, 0.98);
     border: 1px solid #4cd7ff;
@@ -240,8 +246,14 @@
     color: #eaf7ff;
     z-index: 20;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    display: none;
-    pointer-events: none;
+}
+
+@supports not (anchor-name: --anchor) {
+    .modal-popover:popover-open {
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+    }
 }
 
 .modal-metric-card:hover {
