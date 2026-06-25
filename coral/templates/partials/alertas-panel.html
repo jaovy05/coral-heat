@@ -1,0 +1,52 @@
+{% load static %}
+<div id="alertas-panel" class="reef-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="alertas-panel-title">
+  <div class="reef-modal__dialog alertas-panel__dialog">
+    <div class="reef-modal__header">
+      <div>
+        <div id="alertas-panel-title" class="reef-modal__title">Meus Alertas</div>
+        <div class="reef-modal__subtitle">Receba e-mail quando a temperatura ultrapassar o limite</div>
+      </div>
+      <button class="reef-modal__close" type="button" onclick="fecharPainelAlertas()" aria-label="Fechar painel de alertas">
+        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+      </button>
+    </div>
+
+    <div class="alertas-panel__body">
+      <div id="alertas-feedback" class="alertas-feedback" hidden></div>
+
+      <section class="alerta-form-card">
+        <h3 class="alertas-section-title">Novo alerta</h3>
+        <form id="alerta-create-form">
+          <div class="alerta-form-grid">
+            <label class="alerta-field">
+              <span>Região</span>
+              <select name="region_name" required></select>
+            </label>
+            <label class="alerta-field">
+              <span>Temperatura limite (°C)</span>
+              <input type="number" name="target_temp" step="0.1" min="0" max="45" value="28.0" required>
+            </label>
+          </div>
+          <label class="alerta-check">
+            <input type="checkbox" name="repeat" checked>
+            <span>Repetir alerta por e-mail</span>
+          </label>
+          <label class="alerta-check">
+            <input type="checkbox" name="active" checked>
+            <span>Alerta ativo</span>
+          </label>
+          <div class="alerta-form-actions">
+            <button type="submit" class="alerta-btn alerta-btn--primary">Cadastrar alerta</button>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h3 class="alertas-section-title">Alertas cadastrados</h3>
+        <div id="alertas-list" class="alertas-list">
+          <p class="alertas-loading">Carregando alertas...</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

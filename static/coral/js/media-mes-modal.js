@@ -459,6 +459,91 @@ function atualizarGraficoModal(modalState) {
     }
 }
 
+function renderAlertaSection(regiao, resumo) {
+    const regionName = regiao?.pais || '';
+    const suggestedTemp = resumo?.avgTemperature != null
+        ? Number(resumo.avgTemperature).toFixed(1)
+        : '28.0';
+
+    if (!window.__USER_AUTHENTICATED__) {
+        return `
+            <section class="modal-section modal-alerta-section">
+                <div class="modal-alerta-section__title">
+                    <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                    Alertas por e-mail
+                </div>
+                <p class="modal-alerta-section__subtitle">Cadastre um alerta para ser avisado quando a temperatura ultrapassar o limite.</p>
+                <div class="modal-alerta-guest">
+                    <a href="/login/?next=${encodeURIComponent(window.location.pathname)}">Faça login</a> para criar alertas de temperatura nesta região.
+                </div>
+            </section>
+        `;
+    }
+
+    return `
+        <section class="modal-section modal-alerta-section">
+            <div class="modal-alerta-section__title">
+                <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                Alertas por e-mail
+            </div>
+            <p class="modal-alerta-section__subtitle">O cron diário enviará e-mail se a média do dia atingir ou ultrapassar o limite.</p>
+            <form id="modal-alerta-form" class="modal-alerta-form">
+                <label class="alerta-field">
+                    <span>Região</span>
+                    <input type="text" name="region_name" value="${escapeHtml(regionName)}" readonly>
+                </label>
+                <label class="alerta-field">
+                    <span>Temperatura limite (°C)</span>
+                    <input type="number" name="target_temp" step="0.1" min="0" max="45" value="${suggestedTemp}" required>
+                </label>
+                <button type="submit" class="alerta-btn alerta-btn--primary">Cadastrar alerta</button>
+            </form>
+            <label class="alerta-check">
+                <input type="checkbox" name="repeat" id="modal-alerta-repeat" form="modal-alerta-form" checked>
+                <span>Repetir alerta por e-mail</span>
+            </label>
+            <p id="modal-alerta-message" class="modal-alerta-message" hidden></p>
+        </section>
+    `;
+}
+
+function mountAlertaForm(regiao, resumo) {
+    const form = document.getElementById('modal-alerta-form');
+    const message = document.getElementById('modal-alerta-message');
+    if (!form || !window.criarAlerta) {
+        return;
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const repeatCheckbox = document.getElementById('modal-alerta-repeat');
+        const payload = {
+            region_name: form.region_name.value,
+            target_temp: parseFloat(form.target_temp.value),
+            repeat: repeatCheckbox ? repeatCheckbox.checked : true,
+            active: true,
+        };
+
+        if (message) {
+            message.hidden = false;
+            message.textContent = 'Salvando alerta...';
+            message.classList.remove('modal-alerta-message--error');
+        }
+
+        try {
+            await window.criarAlerta(payload);
+            if (message) {
+                message.textContent = 'Alerta cadastrado! Você receberá e-mail quando o limite for atingido.';
+            }
+        } catch (err) {
+            if (message) {
+                message.textContent = err.message || 'Não foi possível cadastrar o alerta.';
+                message.classList.add('modal-alerta-message--error');
+            }
+        }
+    });
+}
+
 function renderResumoModal(payload, regiao, modalState) {
     const series = modalState.series;
     const resumo = modalState.resumo;
@@ -483,6 +568,8 @@ function renderResumoModal(payload, regiao, modalState) {
                     ${renderMetricChart(series, modalState.selectedMetric)}
                 </div>
             </section>
+
+            ${renderAlertaSection(regiao, resumo)}
         </div>
     `;
 }
@@ -528,6 +615,7 @@ function abrirModalMediaMes(regiao) {
             window.__mediaMesModalState = modalState;
             body.innerHTML = renderResumoModal(payload, regiao, modalState);
             mountMetricSwitcher(modalState);
+            mountAlertaForm(regiao, resumo);
 
             if (window.lucide?.createIcons) {
                 lucide.createIcons();

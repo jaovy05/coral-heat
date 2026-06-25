@@ -353,24 +353,103 @@ class AlertaDeleteView(LoginRequiredMixin, DeleteView):
 def criar_alerta_api(request):
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'error': 'Usuário não autenticado.'}, status=401)
-    
+
     try:
         data = json.loads(request.body)
-        region_name = data.get('region_name')
-        target_temp = float(data.get('target_temp'))
-        repeat = bool(data.get('repeat', True))
-        
-        if not region_name:
-            return JsonResponse({'success': False, 'error': 'Nome da região é obrigatório.'}, status=400)
-            
+        region_name, target_temp, repeat, active = _parse_alerta_payload(data)
         alerta = Alerta.objects.create(
             user=request.user,
             region_name=region_name,
             target_temp=target_temp,
             repeat=repeat,
-            active=True
+            active=active,
         )
-        return JsonResponse({'success': True, 'alerta_id': alerta.id})
+        return JsonResponse({'success': True, 'alerta_id': alerta.id, 'alerta': _alerta_to_dict(alerta)})
     except (ValueError, TypeError, json.JSONDecodeError) as e:
-        return JsonResponse({'success': False, 'error': f'Dados inválidos: {str(e)}'}, status=400)
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+def _alerta_to_dict(alerta):
+    return {
+        'id': alerta.id,
+        'region_name': alerta.region_name,
+        'target_temp': alerta.target_temp,
+        'repeat': alerta.repeat,
+        'active': alerta.active,
+        'criado_em': alerta.criado_em.strftime('%d/%m/%Y %H:%M'),
+    }
+
+
+def _parse_alerta_payload(data):
+    region_name = (data.get('region_name') or '').strip()
+    if not region_name:
+        raise ValueError('Nome da região é obrigatório.')
+    target_temp = float(data.get('target_temp'))
+    repeat = bool(data.get('repeat', True))
+    active = bool(data.get('active', True))
+    return region_name, target_temp, repeat, active
+
+
+@require_http_methods(["GET", "POST"])
+def alertas_api(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Usuário não autenticado.'}, status=401)
+
+    if request.method == 'GET':
+        alertas = Alerta.objects.filter(user=request.user).order_by('-criado_em')
+        return JsonResponse({
+            'success': True,
+            'alertas': [_alerta_to_dict(a) for a in alertas],
+        })
+
+    try:
+        data = json.loads(request.body)
+        region_name, target_temp, repeat, active = _parse_alerta_payload(data)
+        alerta = Alerta.objects.create(
+            user=request.user,
+            region_name=region_name,
+            target_temp=target_temp,
+            repeat=repeat,
+            active=active,
+        )
+        return JsonResponse({'success': True, 'alerta': _alerta_to_dict(alerta)})
+    except (ValueError, TypeError, json.JSONDecodeError) as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+@require_http_methods(["PATCH", "DELETE"])
+def alerta_api_detail(request, pk):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Usuário não autenticado.'}, status=401)
+
+    alerta = get_object_or_404(Alerta, pk=pk, user=request.user)
+
+    if request.method == 'DELETE':
+        alerta.delete()
+        return JsonResponse({'success': True})
+
+    try:
+        data = json.loads(request.body)
+        if 'region_name' in data:
+            region_name = (data.get('region_name') or '').strip()
+            if not region_name:
+                raise ValueError('Nome da região é obrigatório.')
+            alerta.region_name = region_name
+        if 'target_temp' in data:
+            alerta.target_temp = float(data['target_temp'])
+        if 'repeat' in data:
+            alerta.repeat = bool(data['repeat'])
+        if 'active' in data:
+            alerta.active = bool(data['active'])
+        alerta.save()
+        return JsonResponse({'success': True, 'alerta': _alerta_to_dict(alerta)})
+    except (ValueError, TypeError, json.JSONDecodeError) as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+@require_http_methods(["GET"])
+def alertas_regioes_api(request):
+    from .forms import obter_regioes
+    regioes = [nome for nome, _ in obter_regioes()]
+    return JsonResponse({'success': True, 'regioes': regioes})
 

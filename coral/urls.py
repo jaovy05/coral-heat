@@ -27,4 +27,7 @@ urlpatterns = [
     path('alertas/<int:pk>/editar/', views.AlertaUpdateView.as_view(), name='alerta-update'),
     path('alertas/<int:pk>/deletar/', views.AlertaDeleteView.as_view(), name='alerta-delete'),
     path('alertas/api/criar/', views.criar_alerta_api, name='alerta-criar-api'),
+    path('alertas/api/regioes/', views.alertas_regioes_api, name='alerta-regioes-api'),
+    path('alertas/api/', views.alertas_api, name='alerta-api'),
+    path('alertas/api/<int:pk>/', views.alerta_api_detail, name='alerta-api-detail'),
 ]

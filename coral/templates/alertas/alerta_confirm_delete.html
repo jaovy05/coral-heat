@@ -1,9 +1,30 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>Deletar Alerta</h2>
-<p>Tem certeza que deseja deletar o alerta para {{ object.region_name }}?</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
-</form>
-{% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Excluir Alerta — CoralHeat</title>
+  <link rel="stylesheet" href="{% static 'coral/css/alertas.css' %}" />
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <main class="alertas-panel__body" style="max-width: 480px; margin: 100px auto 40px; padding: 0 20px;">
+    <section class="alerta-form-card">
+      <h1 style="color: #fff; margin: 0 0 12px;">Excluir alerta</h1>
+      <p style="color: rgba(198, 231, 243, 0.85); margin-bottom: 20px;">
+        Tem certeza que deseja excluir o alerta de <strong>{{ object.region_name }}</strong>
+        (≥ {{ object.target_temp }} °C)?
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="alerta-form-actions">
+          <button type="submit" class="alerta-btn alerta-btn--danger">Excluir</button>
+          <a href="{% url 'alerta-list' %}" class="alerta-btn alerta-btn--ghost" style="text-decoration: none; display: inline-flex; align-items: center;">Cancelar</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

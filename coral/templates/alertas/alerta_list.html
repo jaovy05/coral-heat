@@ -1,28 +1,31 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>Meus Alertas</h2>
-<a href="{% url 'alerta-create' %}" class="btn btn-primary">Novo Alerta</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Região</th>
-            <th>Temperatura Limite</th>
-            <th>Ativo</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for alerta in alertas %}
-        <tr>
-            <td>{{ alerta.region_name }}</td>
-            <td>{{ alerta.target_temp }}°C</td>
-            <td>{{ alerta.active|yesno:"Sim,Não" }}</td>
-            <td>
-                <a href="{% url 'alerta-update' alerta.pk %}">Editar</a>
-                <a href="{% url 'alerta-delete' alerta.pk %}">Deletar</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meus Alertas — CoralHeat</title>
+  <link rel="stylesheet" href="{% static 'coral/css/alertas.css' %}" />
+  <link rel="stylesheet" href="{% static 'coral/css/media-mes-modal.css' %}" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <main style="padding-top: 100px; text-align: center; color: #eaf7ff;">
+    <p>Carregando painel de alertas...</p>
+    <p><a href="{% url 'index' %}" style="color: #4cd7ff;">Voltar ao mapa</a></p>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof abrirPainelAlertas === 'function') {
+        abrirPainelAlertas();
+      }
+      if (window.lucide?.createIcons) {
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
