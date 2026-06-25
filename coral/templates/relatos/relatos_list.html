@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Minhas Mensagens — CoralHeat</title>
+  <link rel="stylesheet" href="{% static 'coral/css/relatos.css' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <main class="relatos-page">
+    <section class="hero">
+      <div class="container hero-inner">
+        <h1>Minhas Mensagens</h1>
+        <p class="lead">Gerencie suas mensagens e relatos</p>
+      </div>
+    </section>
+
+    <section class="relatos-section container">
+      <div class="relatos-header">
+        <h2>Histórico de Mensagens</h2>
+        <a href="{% url 'contato' %}" class="btn-nova">+ Nova Mensagem</a>
+      </div>
+
+      {% if relatos %}
+        <div class="relatos-list">
+          {% for relato in relatos %}
+            <div class="relato-card">
+              <div class="relato-header">
+                <div class="relato-meta">
+                  <h3>{{ relato.get_tipo_contato_display }}</h3>
+                  <span class="relato-assunto">{{ relato.assunto }}</span>
+                  <span class="relato-date">{{ relato.criado_em|date:"d/m/Y H:i" }}</span>
+                </div>
+              </div>
+
+              <div class="relato-body">
+                <p>{{ relato.mensagem }}</p>
+              </div>
+
+              <div class="relato-footer">
+                {% if relato.pode_editar %}
+                  <a href="{% url 'relatos-edit' relato.pk %}" class="btn-editar">Editar</a>
+                  <span class="badge-edit">Editável por {{ relato.pode_editar|yesno:"2 min," }}</span>
+                {% else %}
+                  <span class="badge-expired">Período de edição encerrado</span>
+                {% endif %}
+                
+                <form method="post" action="{% url 'relatos-delete' relato.pk %}" class="form-delete" onsubmit="return confirm('Tem certeza que deseja deletar?');">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-deletar">Deletar</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+          <div class="pagination">
+            {% if page_obj.has_previous %}
+              <a href="?page=1">Primeira</a>
+              <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+
+            <span class="page-info">
+              Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <h3>Nenhuma mensagem ainda</h3>
+          <p>Você não tem mensagens registradas.</p>
+          <a href="{% url 'contato' %}" class="btn-nova">Enviar Mensagem</a>
+        </div>
+      {% endif %}
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><p>CoralHeat · 2026</p></div>
+  </footer>
+</body>
+</html>

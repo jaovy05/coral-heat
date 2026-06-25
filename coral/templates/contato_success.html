@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mensagem Enviada — CoralHeat</title>
+  <link rel="stylesheet" href="{% static 'coral/css/contato.css' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <main class="contato-page">
+    <section class="success-section">
+      <div class="container success-inner">
+        <div class="success-card">
+          <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h1>Mensagem Enviada com Sucesso!</h1>
+          <p>Obrigado por entrar em contato. Nossa equipe receberá sua mensagem em breve.</p>
+          <p class="subtext">Você receberá uma resposta no email informado.</p>
+          
+          <div class="success-actions">
+            <a href="{% url 'index' %}" class="btn btn-primary">Voltar ao Início</a>
+            <a href="{% url 'contato' %}" class="btn btn-secondary">Enviar Outra Mensagem</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><p>CoralHeat · 2026</p></div>
+  </footer>
+</body>
+</html>

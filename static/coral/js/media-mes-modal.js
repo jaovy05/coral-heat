@@ -188,13 +188,13 @@ function calcularResumoModal(series) {
 
     let healthScore = 100;
     if (avgTemperature !== null) {
-        healthScore -= Math.abs(avgTemperature - 27.8) * 18;
+        healthScore -= Math.abs(avgTemperature - 27.8) * 12;
     }
     if (avgOxygen !== null) {
-        healthScore -= Math.max(0, 6.4 - avgOxygen) * 8;
+        healthScore -= Math.max(0, 6.4 - avgOxygen) * 6;
     }
     if (avgPlankton !== null) {
-        healthScore -= Math.max(0, avgPlankton - 1.2) * 6;
+        healthScore -= Math.max(0, avgPlankton - 1.2) * 3;
     }
     healthScore = Math.max(0, Math.min(100, Math.round(healthScore)));
 
@@ -276,23 +276,36 @@ function renderMetricChart(series, metricKey) {
         `;
     }).join('');
 
-    const xLabels = points.map((point) => {
-        const x = point.x.toFixed(1);
-        const y = height - 14;
-        return `
-            <text
-                x="${x}"
-                y="${y}"
-                transform="rotate(-90 ${x} ${y})"
-                text-anchor="end"
-                fill="rgba(200, 233, 246, 0.75)"
-                font-size="11"
-            >${escapeHtml(point.label)}</text>
-        `;
-    }).join('');
+    // ... (keeping previous content) ...
+        const xLabels = points.map((point) => {
+            const x = point.x.toFixed(1);
+            const y = height - 14;
+            return `
+                <text
+                    x="${x}"
+                    y="${y}"
+                    transform="rotate(60 ${x} ${y})"
+                    text-anchor="end"
+                    fill="rgba(200, 233, 246, 0.75)"
+                    font-size="11"
+                >${escapeHtml(point.label)}</text>
+            `;
+        }).join('');
+    // ... (rest of function renderMetricChart)
+
 
     const dots = points.map((point) => `
-        <circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4.2" fill="${metric.color}" stroke="#fff4dd" stroke-width="2" />
+        <circle 
+            cx="${point.x.toFixed(1)}" 
+            cy="${point.y.toFixed(1)}" 
+            r="5" 
+            fill="${metric.color}" 
+            stroke="#fff" 
+            stroke-width="2" 
+            style="cursor: pointer;"
+            onmouseover="showTooltip(evt, '${escapeHtml(point.label)}', '${formatMetric(point.value, metric.digits)} ${metric.unit}')"
+            onmouseout="hideTooltip()"
+        />
     `).join('');
 
     return `
@@ -310,8 +323,22 @@ function renderMetricChart(series, metricKey) {
                 ${dots}
                 ${xLabels}
             </svg>
+            <div id="modal-chart-tooltip" class="modal-chart-tooltip"></div>
         </div>
     `;
+}
+
+function showTooltip(evt, label, value) {
+    const tooltip = document.getElementById("modal-chart-tooltip");
+    tooltip.innerHTML = `<strong>${label}</strong><br>${value}`;
+    tooltip.style.display = "block";
+    tooltip.style.left = (evt.clientX + 10) + "px";
+    tooltip.style.top = (evt.clientY + 10) + "px";
+}
+
+function hideTooltip() {
+    const tooltip = document.getElementById("modal-chart-tooltip");
+    tooltip.style.display = "none";
 }
 
 function renderMetricCards(series, selectedMetric) {
@@ -386,25 +413,6 @@ function renderResumoModal(payload, regiao, modalState) {
 
     return `
         <div class="modal-shell">
-            <div class="modal-hero">
-                <article class="modal-stat-card modal-stat-card--compact">
-                    <div class="modal-stat-label">Temperatura Média</div>
-                    <div class="modal-stat-value">${resumo.avgTemperature !== null ? `${formatMetric(resumo.avgTemperature, 1)}°C` : '--'}</div>
-                    <div class="modal-stat-note">
-                        ${resumo.minTemperature !== null ? `Faixa ${formatMetric(resumo.minTemperature, 1)}°C • ${formatMetric(resumo.maxTemperature, 1)}°C` : 'Sem faixa disponível'}
-                    </div>
-                </article>
-                <article class="modal-stat-card">
-                    <div class="modal-stat-label">Saúde dos Corais</div>
-                    <div class="modal-stat-value ${resumo.healthClass}">${resumo.healthLabel}</div>
-                    <div class="modal-stat-note">${resumo.healthNote}</div>
-                </article>
-                <article class="modal-stat-card modal-stat-card--accent">
-                    <div class="modal-stat-label">Status Geral</div>
-                    <div class="modal-stat-value ${resumo.statusClass}">${resumo.statusLabel}</div>
-                    <div class="modal-stat-note">${resumo.statusNote}</div>
-                </article>
-            </div>
 
             <section class="modal-section">
                 <div class="modal-section__heading">

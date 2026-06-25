@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contato — CoralHeat</title>
+  <link rel="stylesheet" href="{% static 'coral/css/contato.css' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <main class="contato-page">
+    <section class="hero">
+      <div class="container hero-inner">
+        <h1>Entre em Contato</h1>
+        <p class="lead">Reporte problemas ou conecte sua ONG à nossa plataforma</p>
+      </div>
+    </section>
+
+    <section class="contact-section container">
+      <div class="contact-container">
+        <!-- Seção de Formulário -->
+        <div class="form-column">
+          <h2>Envie sua Mensagem</h2>
+          
+          {% if user.is_authenticated %}
+            <form method="post" class="contact-form">
+              {% csrf_token %}
+
+              <!-- Tipo de Contato -->
+              <div class="form-group">
+                <label for="id_tipo_contato">Tipo de Contato</label>
+                {{ form.tipo_contato }}
+                {% if form.tipo_contato.errors %}
+                  <span class="error">{{ form.tipo_contato.errors }}</span>
+                {% endif %}
+              </div>
+
+              <!-- Assunto -->
+              <div class="form-group">
+                <label for="id_assunto">Assunto</label>
+                {{ form.assunto }}
+                {% if form.assunto.errors %}
+                  <span class="error">{{ form.assunto.errors }}</span>
+                {% endif %}
+              </div>
+
+              <!-- Mensagem -->
+              <div class="form-group">
+                <label for="id_mensagem">Mensagem</label>
+                {{ form.mensagem }}
+                {% if form.mensagem.errors %}
+                  <span class="error">{{ form.mensagem.errors }}</span>
+                {% endif %}
+              </div>
+
+              <button type="submit" class="btn-enviar">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                Enviar Mensagem
+              </button>
+            </form>
+          {% else %}
+            <div class="login-required">
+              <p>Para enviar uma mensagem, você precisa estar logado.</p>
+              <a href="{% url 'login' %}" class="btn-login">Fazer Login</a>
+              <p class="signup-link">Ou <a href="{% url 'register' %}">crie uma conta aqui</a></p>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Seção de Informações -->
+        <div class="info-column">
+          <h2>Informações de Contato</h2>
+
+          <!-- Email -->
+          <div class="info-card">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            </div>
+            <div class="info-content">
+              <h4>Email</h4>
+              <a href="mailto:contato@coralwatch.org">contato@coralwatch.org</a>
+            </div>
+          </div>
+
+          <!-- Telefone -->
+          <div class="info-card">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="info-content">
+              <h4>Telefone</h4>
+              <a href="tel:+5511999999999">+55 (11) 9999-9999</a>
+            </div>
+          </div>
+
+          <!-- Endereço -->
+          <div class="info-card">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div class="info-content">
+              <h4>Endereço</h4>
+              <p>São Paulo, Brasil</p>
+            </div>
+          </div>
+
+          <!-- Reportar Problema -->
+          <div class="cta-card reportar">
+            <div class="cta-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <div class="cta-content">
+              <h4>Reportar Problema</h4>
+              <p>Encontrou um erro no site ou dados incorretos? Nos ajude a melhorar reportando problemas técnicos.</p>
+            </div>
+          </div>
+
+          <!-- ONGs e Parcerias -->
+          <div class="cta-card ongs">
+            <div class="cta-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </div>
+            <div class="cta-content">
+              <h4>ONGs e Parcerias</h4>
+              <p>Trabalha com conservação marinha? Entre em contato para adicionar sua organização à plataforma.</p>
+            </div>
+          </div>
+
+          <!-- Imagem de Coral -->
+          <div class="coral-image">
+            <img src="{% static 'coral/img/coral-info-peixe.jpeg' %}" alt="Recife de coral colorido" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><p>CoralHeat · 2026</p></div>
+  </footer>
+</body>
+</html>

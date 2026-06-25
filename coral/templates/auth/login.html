@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrar — CoralHeat</title>
+  <link rel="stylesheet" href="{% static 'coral/css/auth-form.css' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <div class="page auth-page">
+    <img src="{% static 'coral/img/coral-login.jpg' %}" alt="" aria-hidden="true" class="bg-image" />
+    <div class="overlay"></div>
+    <div class="glow"></div>
+
+    <main class="content">
+      <div class="card">
+        <div class="header">
+          <div class="icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                <polyline points="10 17 15 12 10 7"/>
+                <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+          </div>
+          <h1>Bem-vindo ao CoralHeat</h1>
+          <p class="subtitle">Faça login para acessar sua conta</p>
+        </div>
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-error" style="color: #ff6b6b; margin-bottom: 1rem; font-size: 0.875rem;">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" class="auth-form" novalidate>
+          {% csrf_token %}
+          
+          <div class="field">
+            <label for="id_username">Usuário</label>
+            <input type="text" name="username" id="id_username" required autofocus>
+          </div>
+
+          <div class="field">
+            <label for="id_password">Senha</label>
+            <div class="password-wrap">
+              <input type="password" name="password" id="id_password" required>
+              <button type="button" class="toggle-pass" onclick="togglePassword(this)" aria-label="Mostrar senha">
+                <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">Entrar</button>
+
+          <div class="back">
+            <p>Não tem uma conta? <a href="{% url 'register' %}">Crie uma agora</a></p>
+          </div>
+        </form>
+      </div>
+
+      <p class="footer-note">CoralHeat · 2026</p>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+    function togglePassword(btn) {
+      const input = btn.parentElement.querySelector('input');
+      const isPass = input.type === 'password';
+      input.type = isPass ? 'text' : 'password';
+      btn.innerHTML = isPass ? '<i data-lucide="eye-off" style="width: 16px; height: 16px;"></i>' : '<i data-lucide="eye" style="width: 16px; height: 16px;"></i>';
+      lucide.createIcons();
+      btn.setAttribute('aria-label', isPass ? 'Ocultar senha' : 'Mostrar senha');
+    }
+  </script>
+</body>
+</html>

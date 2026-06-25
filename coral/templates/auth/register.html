@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar — CoralHeat</title>
+  <link rel="stylesheet" href="{% static 'coral/css/auth-form.css' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  {% include 'partials/header.html' %}
+
+  <div class="page auth-page">
+    <img src="{% static 'coral/img/coral-login.jpg' %}" alt="" aria-hidden="true" class="bg-image" />
+    <div class="overlay"></div>
+    <div class="glow"></div>
+
+    <main class="content">
+      <div class="card">
+        <div class="header">
+          <div class="icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <line x1="19" y1="8" x2="19" y2="14"/>
+                <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+          </div>
+          <h1>Crie sua Conta</h1>
+          <p class="subtitle">Junte-se à nossa comunidade de conservação marinha</p>
+        </div>
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-error" style="color: #ff6b6b; margin-bottom: 1rem; font-size: 0.875rem;">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" class="auth-form" novalidate>
+          {% csrf_token %}
+          
+          {% for field in form %}
+            <div class="field">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {% if "password" in field.name %}
+                <div class="password-wrap">
+                  {{ field }}
+                  <button type="button" class="toggle-pass" onclick="togglePassword(this)" aria-label="Mostrar senha">
+                    <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+                  </button>
+                </div>
+              {% else %}
+                {{ field }}
+              {% endif %}
+              {% if field.errors %}
+                <div class="error" style="color: #ff6b6b; font-size: 0.75rem;">
+                  {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <button type="submit" class="btn-primary">Criar Conta</button>
+
+          <div class="back">
+            <p>Já tem uma conta? <a href="{% url 'login' %}">Faça login</a></p>
+          </div>
+        </form>
+      </div>
+
+      <p class="footer-note">CoralHeat · 2026</p>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+    function togglePassword(btn) {
+      const input = btn.parentElement.querySelector('input');
+      const isPass = input.type === 'password';
+      input.type = isPass ? 'text' : 'password';
+      btn.innerHTML = isPass ? '<i data-lucide="eye-off" style="width: 16px; height: 16px;"></i>' : '<i data-lucide="eye" style="width: 16px; height: 16px;"></i>';
+      lucide.createIcons();
+      btn.setAttribute('aria-label', isPass ? 'Ocultar senha' : 'Mostrar senha');
+    }
+  </script>
+</body>
+</html>

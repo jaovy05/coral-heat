@@ -1,8 +1,9 @@
-:root{
-  --header-height:64px;
+:root {
+  --header-height: 64px;
 }
-.site-header{
-  background: linear-gradient(90deg,#063b46,#0b6b74);
+
+.site-header {
+  background: linear-gradient(90deg, #063b46, #0b6b74);
   color: #fff;
   padding: 10px 0;
   position: fixed;
@@ -13,9 +14,10 @@
   z-index: 10000;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 12px rgba(2,20,26,0.12);
+  box-shadow: 0 4px 12px rgba(2, 20, 26, 0.12);
 }
-.site-header .container{
+
+.site-header .container {
   width: 90%;
   max-width: 1100px;
   margin: 0 auto;
@@ -23,7 +25,8 @@
   align-items: center;
   justify-content: space-between;
 }
-.site-header .brand a{
+
+.site-header .brand a {
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -32,21 +35,153 @@
   align-items: center;
   gap: 10px;
 }
-.site-header .brand svg{height:22px;opacity:0.95}
-.site-header nav a{color:#bfe9e6;text-decoration:none;margin:0 10px}
-.site-header .btn-mapa{background:#19c1d3;color:#02343a;padding:8px 14px;border-radius:20px;text-decoration:none;font-weight:600}
-.site-header .actions a{color:#fff;text-decoration:none;margin-left:8px;display:inline-flex;align-items:center}
-.site-header .icon{width:20px;height:20px;display:inline-block}
+
+.site-header .brand svg {
+  height: 22px;
+  opacity: 0.95;
+}
+
+.site-header nav a {
+  color: #bfe9e6;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.site-header .btn-mapa {
+  background: #19c1d3;
+  color: #02343a;
+  padding: 8px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.site-header .actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-signin {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.btn-signin:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.user-dropdown {
+  position: relative;
+}
+
+.user-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.user-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.site-header .icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: linear-gradient(135deg, #063b46, #0b4a52);
+  border: 1px solid rgba(25, 193, 211, 0.2);
+  border-radius: 8px;
+  min-width: 200px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #bfe9e6;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: rgba(25, 193, 211, 0.1);
+  color: #19c1d3;
+}
+
+.dropdown-item svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dropdown-item.logout {
+  color: #ff6b6b;
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff8787;
+}
+
+.dropdown-divider {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid rgba(25, 193, 211, 0.1);
+}
 
 /* Responsividade simples para telas de notebook */
-@media (max-width: 1100px){
-  .site-header .container{width:95%}
-  .site-header nav a{margin:0 6px;font-size:14px}
-  .site-header .brand a{font-size:18px}
+@media (max-width: 1100px) {
+  .site-header .container {
+    width: 95%;
+  }
+
+  .site-header nav a {
+    margin: 0 6px;
+    font-size: 14px;
+  }
+
+  .site-header .brand a {
+    font-size: 18px;
+  }
 }
 
 /* Ajuste o mapa para não ficar sob o header */
-#map-container{
+#map-container {
   top: var(--header-height) !important;
   height: calc(100% - var(--header-height)) !important;
 }

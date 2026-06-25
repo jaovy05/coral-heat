@@ -31,6 +31,7 @@
     justify-content: space-between;
     gap: 16px;
     padding: 28px 28px 16px;
+    margin-bottom: 16px;
 }
 
 .reef-modal__title {
@@ -197,15 +198,15 @@
 .modal-metric-card {
     border: 1px solid rgba(76, 215, 255, 0.12);
     border-radius: 18px;
-    padding: 14px 12px;
+    padding: 10px 8px;
     background: rgba(6, 38, 58, 0.86);
     color: #eaf7ff;
     cursor: pointer;
     text-align: left;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 110px;
+    gap: 6px;
+    min-height: 90px;
     transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
 
@@ -222,9 +223,9 @@
 }
 
 .modal-metric-card__icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
     display: grid;
     place-items: center;
     background: rgba(255, 255, 255, 0.06);
@@ -232,12 +233,12 @@
 }
 
 .modal-metric-card__label {
-    font-size: 12px;
+    font-size: 11px;
     color: rgba(203, 233, 245, 0.88);
 }
 
 .modal-metric-card__value {
-    font-size: 20px;
+    font-size: 16px;
     line-height: 1;
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -245,14 +246,14 @@
 }
 
 .modal-metric-card__value span {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     color: rgba(198, 231, 243, 0.72);
 }
 
 .modal-metric-card__note {
     margin-top: auto;
-    font-size: 11px;
+    font-size: 10px;
     color: rgba(198, 231, 243, 0.68);
 }
 
@@ -263,12 +264,26 @@
     background: linear-gradient(180deg, rgba(16, 66, 100, 0.92), rgba(12, 56, 86, 0.95));
     border: 1px solid rgba(94, 192, 224, 0.16);
     padding-bottom: 4px;
+    position: relative; /* Tooltip context */
 }
 
 .modal-chart svg {
     display: block;
     width: 100%;
     height: auto;
+}
+
+.modal-chart-tooltip {
+    position: absolute;
+    background: rgba(6, 27, 45, 0.95);
+    border: 1px solid #4cd7ff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #ffffff;
+    pointer-events: none;
+    display: none;
+    z-index: 10;
 }
 
 .modal-chart__empty {

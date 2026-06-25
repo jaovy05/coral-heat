@@ -1,16 +1,21 @@
 from datetime import date
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, Http404
 from .infra import db
 import json
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.contrib.auth import login
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.contrib.auth import login, logout
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
+from django.utils import timezone
+from .models import Contact
+from .forms import ContactForm, CustomUserCreationForm, UserUpdateForm
 
 # Create your views here.
 def index(request):
@@ -205,8 +210,8 @@ def getDadosDia(request):
 
 class UserCreateView(CreateView):
     model = User
-    form_class = UserCreationForm
-    template_name = 'user_form.html'
+    form_class = CustomUserCreationForm
+    template_name = 'auth/register.html'
     success_url = reverse_lazy('index')
     
     def form_valid(self, form):
@@ -216,8 +221,8 @@ class UserCreateView(CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    fields = ['username', 'email']
-    template_name = 'user_form.html'
+    form_class = UserUpdateForm
+    template_name = 'auth/user_form.html'
     success_url = reverse_lazy('index')
 
     def get_object(self, queryset=None):
@@ -236,3 +241,70 @@ def sobre(request):
     Template: coral/templates/sobre.html
     """
     return render(request, 'sobre.html')
+
+class ContatoView(LoginRequiredMixin, CreateView):
+    """Permite que usuários logados enviem mensagens de contato.
+    Pré-preenche o nome e email com dados do usuário logado.
+    """
+    model = Contact
+    form_class = ContactForm
+    template_name = 'contato.html'
+    success_url = reverse_lazy('contato-success')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['usuario'] = self.request.user
+        return context
+    
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        form.instance.nome_completo = self.request.user.get_full_name() or self.request.user.username
+        form.instance.email = self.request.user.email
+        return super().form_valid(form)
+
+def contato_success(request):
+    """Página de sucesso após envio de contato."""
+    return render(request, 'contato_success.html')
+
+class RelatosListView(LoginRequiredMixin, ListView):
+    """Lista as mensagens (relatos) do usuário logado."""
+    model = Contact
+    template_name = 'relatos/relatos_list.html'
+    context_object_name = 'relatos'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        return Contact.objects.filter(usuario=self.request.user, deletado=False)
+
+class RelatosUpdateView(LoginRequiredMixin, UpdateView):
+    """Permite que usuário edite sua mensagem nos primeiros 2 minutos."""
+    model = Contact
+    form_class = ContactForm
+    template_name = 'relatos/relatos_form.html'
+    success_url = reverse_lazy('relatos-list')
+    
+    def get_queryset(self):
+        return Contact.objects.filter(usuario=self.request.user)
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if not self.object.pode_editar():
+            return redirect('relatos-list')
+        return super().get(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        self.object.atualizado_em = timezone.now()
+        return super().form_valid(form)
+
+@require_http_methods(["POST"])
+def relatos_delete(request, pk):
+    """Soft delete de uma mensagem (marca como deletada)."""
+    relato = get_object_or_404(Contact, pk=pk, usuario=request.user)
+    relato.deletado = True
+    relato.save()
+    return redirect('relatos-list')
+
+def logout_view(request):
+    """Faz logout do usuário."""
+    logout(request)
+    return redirect('index')

@@ -1,0 +1,18 @@
+
+services:
+  db:
+    image: postgres:15-alpine # Imagem oficial super leve, ideal para auth/pagamentos
+    container_name: postgres_transacional
+    restart: always
+    environment:
+      POSTGRES_USER: coral
+      POSTGRES_PASSWORD: coral123
+      POSTGRES_DB: coral_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
